@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+<!--  *****   Link To Custom CSS Style Sheet   *****  -->
+<link rel="stylesheet" type="text/css" href="src/css/style.css">
+
+<!--  *****   Link To Font Awsome Icons   *****  -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"/>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<title>WORKHEART</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.indigo-pink.min.css">
+  <link rel="stylesheet" href="/src/css/app.css">
+  <link rel="stylesheet" href="/src/css/feed.css">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="PWAGram">
+  <link rel="apple-touch-icon" href="/src/images/icons/apple-icon-57x57.png" sizes="57x57">
+  <link rel="apple-touch-icon" href="/src/images/icons/apple-icon-60x60.png" sizes="60x60">
+  <link rel="apple-touch-icon" href="/src/images/icons/apple-icon-72x72.png" sizes="72x72">
+  <link rel="apple-touch-icon" href="/src/images/icons/apple-icon-76x76.png" sizes="76x76">
+  <link rel="apple-touch-icon" href="/src/images/icons/apple-icon-114x114.png" sizes="114x114">
+  <link rel="apple-touch-icon" href="/src/images/icons/apple-icon-120x120.png" sizes="120x120">
+  <link rel="apple-touch-icon" href="/src/images/icons/apple-icon-144x144.png" sizes="144x144">
+  <link rel="apple-touch-icon" href="/src/images/icons/apple-icon-152x152.png" sizes="152x152">
+  <link rel="apple-touch-icon" href="/src/images/icons/apple-icon-180x180.png" sizes="180x180">
+  <meta name="msapplication-TileImage" content="/src/images/icons/app-icon-144x144.png">
+  <meta name="msapplication-TileColor" content="#fff">
+  <meta name="theme-color" content="#3f51b5">
+  <style>
+	img {
+		max-width: 60%;
+		height: auto;
+		margin: 0 auto;
+	}
+	.navbar {
+		padding: 15px;
+        background-color: black; 
+        overflow: hidden; 
+    }   
+    .navbar a {
+        float: right; 
+        display: block; 
+        color: #f2f2f2;
+        text-align: center;
+		margin: 5px 15px;
+        text-decoration: none;
+    }
+	.navbar img {
+		float: left;
+		width: 220px;
+		height: auto;
+	}
+	.navbar a:hover {
+        color: red;
+    }
+	body{
+		background: url(src/images/home/blur.jpg);
+		background-size: cover;
+		color: white;
+	}
+	.data{
+		text-align: center;
+	}
+	.data h2{
+		font-weight: bold;
+	}
+	.container{
+		position: relative;
+		overflow: auto;
+		display: flex; 
+        justify-content: center; 
+        align-items: center;
+	}
+	.card {
+        background-color: rgba(0, 0, 0, 0.7); 
+        padding: 20px;
+        border-radius: 10px; 
+        max-width: 80%; 
+        text-align: center; 
+		justify-content: center;
+    }
+    @media screen and (max-width: 600px) {
+        .navbar a {
+            padding: 10px;
+        }
+    }	
+</style>
+</head>
+
+<body>
+<div class="data" id="detailContainer">
+	<div class="wrapper">
+		<div class="navbar">
+			<a href="web.html">Home</a>
+			<a href="web.html#services">Services</a>
+			<img src="src/images/home/log.png">
+		</div>
+	</div>
+	<div class="container">
+		<div class="card">
+		</div>
+	</div>
+
+<script defer src="/src/js/material.min.js"></script>
+<script src="/src/js/promise.js"></script>
+<script src="/src/js/fetch.js"></script>
+<script src="/src/js/idb.js"></script>
+<script src="/src/js/utility.js"></script>
+<script src="/src/js/app.js"></script>
+<script src="/src/js/feed.js"></script>
+<script>
+    function fetchData(cardId) {
+        fetch(`https://tes1-42e90-default-rtdb.asia-southeast1.firebasedatabase.app/program/${cardId}.json`)
+            .then(response => response.json())
+            .then(data => {
+                const detailContainer = document.getElementById('detailContainer');
+                detailContainer.innerHTML = `<div class="navbar">
+												<a href="web.html#services">Services</a>
+												<a href="web.html">Home</a>
+												<img src="src/images/home/log.png">
+                                            </div>
+											<div>
+												<h2>${data.name}</h2>
+												<div class="container">
+													<div class="card">
+														<img src="${data.img}" alt="${data.name}">
+														<br> <br>
+														<h4>DURATION: ${data.duration}</h4>
+														<br>
+                                                 		<p>${data.info}</p>
+													</div>
+                                                </div>
+  											</div>`;
+				localStorage.setItem(detailContainer, JSON.stringify(data))
+             })
+			.catch(function (error) {
+       			console.error('Fetch error:', error);
+        		window.location.href = '/offline.html'; 
+      		})
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const cardId = urlParams.get('id');
+		const storedData = localStorage.getItem('detailContainer');
+		fetchData(cardId);
+
+		// if (storedData) {
+		// 	const parsedData = JSON.parse(storedData);
+		// 	const detailContainer = document.getElementById('detailContainer');
+        //     detailContainer.innerHTML = `<div class="navbar">
+		// 									<a href="web.html#services">Services</a>
+		// 									<a href="web.html">Home</a>
+		// 									<img src="src/images/home/log.png">
+        //                                 </div>
+		// 								<div>
+		// 									<h2>${parsedData.name}</h2>
+		// 									<div class="container">
+		// 										<div class="card">
+		// 											<img src="${parsedData.img}" alt="${parsedData.name}">
+		// 											<br> <br>
+		// 											<h4>DURATION: ${parsedData.duration}</h4>
+		// 											<br>
+        //                                          	<p>${parsedData.info}</p>
+		// 										</div>
+        //                                     </div>
+  		// 								</div>`;
+		// } else{
+		// 	fetchData(cardId);
+		// }
+
+        
+    </script>
+</div>	
+</body>
+</html>
